@@ -8,7 +8,7 @@
 
 #import "FlowLayout.h"
 
-#define Space 50
+#define Space 70
 
 @implementation FlowLayout
 
@@ -76,6 +76,17 @@
     return proposedContentOffset;
     
 }
+
+- (NSArray *)deepCopyWithArray:(NSArray *)array
+{
+    NSMutableArray *copys = [NSMutableArray arrayWithCapacity:array.count];
+    
+    for (UICollectionViewLayoutAttributes *attris in array) {
+        [copys addObject:[attris copy]];
+    }
+    return copys;
+}
+
 /***
  当前item居中
  这个方法的返回是一个数组（存放的是rect范围内所有元素的布局属性）
@@ -84,8 +95,8 @@
 -(nullable NSArray<__kindof UICollectionViewLayoutAttributes *>*)layoutAttributesForElementsInRect:(CGRect)rect
 {
     //获取super已经计算好的布局属性，只有线性布局才能使用
-//    NSArray *array = [[NSArray array]initWithArray:[super layoutAttributesForElementsInRect:rect] copyItems:YES];
-    NSArray * array = [super layoutAttributesForElementsInRect:rect];
+    NSArray *array = [self deepCopyWithArray:[super layoutAttributesForElementsInRect:rect]];
+//    NSArray * array = [super layoutAttributesForElementsInRect:rect];
     //计算collectionview最中心的Y值
     CGFloat centerY = self.collectionView.contentOffset.y+self.collectionView.frame.size.height/2;
     for (UICollectionViewLayoutAttributes *atts in array) {
@@ -95,7 +106,7 @@
         //根据间距值 计算cell的偏移位置
         NSIndexPath *indep = [NSIndexPath indexPathForRow:atts.indexPath.item inSection:0];
         
-        atts.zIndex = _cellNumber-delta/30;
+        atts.zIndex = _cellNumber-delta/70;
         UICollectionViewLayoutAttributes *tempAttri = [self layoutAttributesForItemAtIndexPath:indep];
         tempAttri.zIndex = atts.zIndex;
         atts.center = CGPointMake(atts.center.x+delta, atts.center.y);
